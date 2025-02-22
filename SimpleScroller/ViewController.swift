@@ -28,6 +28,13 @@ class ViewController: UIViewController {
         view.backgroundColor = .red
         setupScrollView()
     }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if let viewProvider = viewProvider,
+        let collectionViewHeight = viewProvider.staticHeightOfContentView() {
+            containerView.heightAnchor.constraint(equalToConstant: collectionViewHeight).isActive = true
+        }
+    }
 
     private func setupScrollView() {
         view.addSubview(scrollView)
@@ -45,10 +52,6 @@ class ViewController: UIViewController {
             containerView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             containerView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
         ])
-        if let viewProvider = viewProvider,
-        let collectionViewHeight = viewProvider.staticHeightOfContentView() {
-            containerView.heightAnchor.constraint(equalToConstant: collectionViewHeight).isActive = true
-        }
     }
 }
 
