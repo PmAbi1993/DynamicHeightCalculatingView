@@ -32,6 +32,14 @@ class CollectionsViewBuilder: UIView, ViewProvider {
         
         return collectionView
     }
+    
+    func calculateHeight() -> CGFloat {
+        let numberOfItems = 30 // Replace with your actual data source count
+        let itemsPerRow = floor((UIScreen.main.bounds.width - 20) / 100) // Adjust based on your layout
+        let rows = ceil(CGFloat(numberOfItems) / itemsPerRow)
+        let height = rows * 100 + (rows - 1) * 10 // Adjust based on your layout
+        return height
+    }
 }
 
 extension CollectionsViewBuilder: UICollectionViewDataSource {
