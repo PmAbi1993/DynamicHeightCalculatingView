@@ -9,7 +9,17 @@ import UIKit
 
 class CollectionsViewBuilder: UIView, ViewProvider {
     internal weak var viewConsumer: ViewConsumer?
+    lazy var layout: UICollectionViewFlowLayout = {
+        let layout = UICollectionViewFlowLayout()
+        layout.itemSize = CGSize(width: 100, height: 100)
+        layout.minimumInteritemSpacing = 10
+        layout.minimumLineSpacing = 10
+        
+        return layout
+    }()
     
+    private var collectionView: UICollectionView?
+
     init(viewConsumer: ViewConsumer? = nil) {
         self.viewConsumer = viewConsumer
         super.init(frame: .zero)
@@ -20,17 +30,26 @@ class CollectionsViewBuilder: UIView, ViewProvider {
     }
     
     func contentView() -> UIView {
-        let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: 100, height: 100)
-        layout.minimumInteritemSpacing = 10
-        layout.minimumLineSpacing = 10
         
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        guard let collectionView = collectionView else {
+            return UIView()
+        }
         collectionView.dataSource = self
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "Cell")
         collectionView.backgroundColor = .white
         
         return collectionView
+    }
+    func staticHeightOfContentView() -> CGFloat? {
+        let numberOfItems = 30 // Replace with your actual data source count
+        let itemsPerRow = floor((UIScreen.main.bounds.width - 20) / 100) // Adjust based on your layout
+        let rows = ceil(CGFloat(numberOfItems) / itemsPerRow)
+        let height = rows * 100 + (rows - 1) * 10 // Adjust based on your layout
+        
+        let collectionViewHeight: CGFloat? = collectionView?.dynamicHeightOfCollectionView()
+        
+        return collectionViewHeight
     }
 }
 

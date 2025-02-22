@@ -48,11 +48,20 @@ class StackedImagesViewBuilder: ViewProvider {
             "cloud", "moon", "sun", "bolt", "flag",
             "bell", "envelope", "gear", "person", "house",
             "car", "airplane", "book", "camera", "pencil"
+        ] + [
+            "circle", "square", "triangle", "star", "heart",
+            "cloud", "moon", "sun", "bolt", "flag",
+            "bell", "envelope", "gear", "person", "house",
+            "car", "airplane", "book", "camera", "pencil"
+        ] + [
+            "circle", "square", "triangle", "star", "heart",
+            "cloud", "moon", "sun", "bolt", "flag",
+            "bell", "envelope", "gear", "person", "house",
+            "car", "airplane", "book", "camera", "pencil"
         ]
     }
     
     func build() {
         self.viewConsumer?.loadContainerView(containingView: contentView())
     }
-    
 }
