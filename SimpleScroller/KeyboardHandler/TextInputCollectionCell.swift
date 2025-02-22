@@ -5,13 +5,15 @@
 //  Created by Abhijith Pm on 22/2/25.
 //
 
+// Summary of changes (23/2/25):
+// - Added keyboard handling functionality
+// - Implemented UITextFieldDelegate methods
+// - Added first responder management
+// - Configured return key to dismiss keyboard
+
 import UIKit
 
-// Requirements:
-// Add a textinput field to the cell. Pin in to the edges of the cell
-// Add a placeholder to the textinput field. The placeholder should be customizable from outside.
-
-class TextInputCollectionCell: UICollectionViewCell {
+class TextInputCollectionCell: UICollectionViewCell, UITextFieldDelegate {
     let textField: UITextField = {
         let tf = UITextField()
         tf.translatesAutoresizingMaskIntoConstraints = false
@@ -27,7 +29,21 @@ class TextInputCollectionCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
+
+    override func becomeFirstResponder() -> Bool {
+        return textField.becomeFirstResponder()
+    }
+
+    override func resignFirstResponder() -> Bool {
+        return textField.resignFirstResponder()
+    }
+
     private func setupTextField() {
+        textField.delegate = self
+        textField.returnKeyType = .done
         contentView.addSubview(textField)
         NSLayoutConstraint.activate([
             textField.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -39,5 +55,15 @@ class TextInputCollectionCell: UICollectionViewCell {
     
     func setPlaceholder(_ placeholder: String) {
         textField.placeholder = placeholder
+    }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        // Handle text changes if needed
+        return true
     }
 }

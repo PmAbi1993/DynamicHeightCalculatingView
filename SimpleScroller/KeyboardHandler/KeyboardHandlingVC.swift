@@ -25,6 +25,16 @@ class KeyboardHandlingVC: UIViewController {
         setupCollectionView()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        registerForKeyboardNotifications()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        unregisterForKeyboardNotifications()
+    }
+
     private func setupCollectionView() {
         view.addSubview(collectionView)
         NSLayoutConstraint.activate([
@@ -34,11 +44,59 @@ class KeyboardHandlingVC: UIViewController {
             collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
+
+    private func registerForKeyboardNotifications() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow(_:)),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide(_:)),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+    }
+
+    private func unregisterForKeyboardNotifications() {
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+
+    @objc private func keyboardWillShow(_ notification: Notification) {
+        guard let userInfo = notification.userInfo,
+              let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
+              let animationDuration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval else {
+            return
+        }
+
+        let keyboardHeight = keyboardFrame.height
+        let contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardHeight, right: 0)
+
+        UIView.animate(withDuration: animationDuration) {
+            self.collectionView.contentInset = contentInset
+            self.collectionView.scrollIndicatorInsets = contentInset
+        }
+    }
+
+    @objc private func keyboardWillHide(_ notification: Notification) {
+        guard let userInfo = notification.userInfo,
+              let animationDuration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval else {
+            return
+        }
+
+        UIView.animate(withDuration: animationDuration) {
+            self.collectionView.contentInset = .zero
+            self.collectionView.scrollIndicatorInsets = .zero
+        }
+    }
 }
 
 extension KeyboardHandlingVC: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return 20
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -48,32 +106,5 @@ extension KeyboardHandlingVC: UICollectionViewDataSource, UICollectionViewDelega
         }
         cell.setPlaceholder("This is a basic text input cell")
         return cell
-    }
-}
-
-class InputCell: UICollectionViewCell {
-    let textField: UITextField = {
-        let tf = UITextField()
-        tf.translatesAutoresizingMaskIntoConstraints = false
-        return tf
-    }()
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupTextField()
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    private func setupTextField() {
-        contentView.addSubview(textField)
-        NSLayoutConstraint.activate([
-            textField.topAnchor.constraint(equalTo: contentView.topAnchor),
-            textField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
-            textField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
-            textField.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
-        ])
     }
 }
