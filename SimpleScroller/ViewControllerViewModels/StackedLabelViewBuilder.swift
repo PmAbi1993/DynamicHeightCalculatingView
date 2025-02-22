@@ -12,8 +12,12 @@ protocol ViewProvider: AnyObject {
     var viewConsumer: ViewConsumer? { get set }
     func contentView() -> UIView
     func build()
+    func staticHeightOfContentView() -> CGFloat?
 }
 extension ViewProvider {
+    func staticHeightOfContentView() -> CGFloat? {
+        return nil
+    }
     func build() {
         self.viewConsumer?.loadContainerView(containingView: self.contentView())
     }

@@ -33,9 +33,6 @@ class ViewController: UIViewController {
         view.addSubview(scrollView)
         scrollView.addSubview(containerView)
 
-        // Calculate the height of the collection view
-        let collectionViewHeight = (viewProvider as? CollectionsViewBuilder)?.calculateHeight() ?? 0
-
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
@@ -46,9 +43,12 @@ class ViewController: UIViewController {
             containerView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             containerView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             containerView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            containerView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-            containerView.heightAnchor.constraint(equalToConstant: collectionViewHeight) // Set height
+            containerView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
         ])
+        if let viewProvider = viewProvider,
+        let collectionViewHeight = viewProvider.staticHeightOfContentView() {
+            containerView.heightAnchor.constraint(equalToConstant: collectionViewHeight).isActive = true
+        }
     }
 }
 
