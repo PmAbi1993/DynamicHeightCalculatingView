@@ -9,14 +9,21 @@ import Foundation
 import UIKit
 
 protocol ViewProvider: AnyObject {
+    var viewConsumer: ViewConsumer? { get set }
     func contentView() -> UIView
+    func build()
+}
+extension ViewProvider {
+    func build() {
+        self.viewConsumer?.loadContainerView(containingView: self.contentView())
+    }
 }
 protocol ViewConsumer: AnyObject {
     func loadContainerView(containingView: UIView)
 }
 class StackedLabelViewBuilder: ViewProvider {
     private let strings: [String]
-    private weak var viewConsumer: ViewConsumer?
+    internal weak var viewConsumer: ViewConsumer?
     
     init(strings: [String], viewConsumer: ViewConsumer) {
         self.strings = strings
