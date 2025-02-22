@@ -7,7 +7,6 @@
 
 import UIKit
 
-
 class ViewController: UIViewController {
 
     private let scrollView: UIScrollView = {
@@ -16,10 +15,9 @@ class ViewController: UIViewController {
         return scrollView
     }()
     
-    var continerView: UIView = {
+    var containerView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .red
         return view
     }()
 
@@ -28,12 +26,12 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .red
-        prepareContentView()
+        setupScrollView()
     }
 
-    private func prepareContentView() {
+    private func setupScrollView() {
         view.addSubview(scrollView)
-        scrollView.addSubview(continerView)
+        scrollView.addSubview(containerView)
 
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -41,21 +39,27 @@ class ViewController: UIViewController {
             scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
 
-//             continerView.heightAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.heightAnchor)
+            containerView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            containerView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            containerView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            containerView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            containerView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
         ])
     }
 }
 
-
 extension ViewController: ViewConsumer {
-     func loadContainerView(containingView: UIView) {
-       continerView.addSubview(containingView)
-       containingView.translatesAutoresizingMaskIntoConstraints = false
+    func loadContainerView(containingView: UIView) {
+        containerView.addSubview(containingView)
+        containingView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            containingView.topAnchor.constraint(equalTo: continerView.topAnchor),
-            containingView.leadingAnchor.constraint(equalTo: continerView.leadingAnchor),
-            containingView.trailingAnchor.constraint(equalTo: continerView.trailingAnchor),
-            containingView.bottomAnchor.constraint(equalTo: continerView.bottomAnchor),
+            containingView.topAnchor.constraint(equalTo: containerView.topAnchor),
+            containingView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            containingView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            containingView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
         ])
+        
+        // Update scrollView content size
+        scrollView.contentSize = containingView.bounds.size
     }
 }
