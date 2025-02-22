@@ -15,15 +15,7 @@ class ViewController: UIViewController {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         return scrollView
     }()
-
-    private let stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = 10
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }()
-
+    
     var continerView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -41,8 +33,7 @@ class ViewController: UIViewController {
 
     private func prepareContentView() {
         view.addSubview(scrollView)
-        scrollView.addSubview(stackView)
-        stackView.addArrangedSubview(continerView)
+        scrollView.addSubview(continerView)
 
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -50,13 +41,7 @@ class ViewController: UIViewController {
             scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
 
-            stackView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
-            stackView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
-            stackView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
-            stackView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
-
-            // continerView.heightAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.heightAnchor)
+//             continerView.heightAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.heightAnchor)
         ])
     }
 }
